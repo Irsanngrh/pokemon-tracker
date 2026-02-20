@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 class SeedRealExpansions extends Command
 {
     protected $signature = 'scrape:real-data';
-    protected $description = 'Dispatch scraping jobs for official expansions with dummy fillers';
+    protected $description = 'Dispatch scraping jobs for official expansions';
 
     public function handle(): void
     {
@@ -26,11 +26,7 @@ class SeedRealExpansions extends Command
         ];
 
         foreach ($expansions as $name => $url) {
-            $expansion = Expansion::firstOrCreate(
-                ['name' => $name],
-                ['total_cards' => 0]
-            );
-
+            $expansion = Expansion::firstOrCreate(['name' => $name], ['total_cards' => 0]);
             ScrapeExpansionJob::dispatch($expansion->id, $url);
         }
     }

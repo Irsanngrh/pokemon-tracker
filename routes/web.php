@@ -9,9 +9,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminAuth;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Index');
-});
+Route::get('/', function () { return Inertia::render('Index'); });
+Route::get('/my-collection', function () { return Inertia::render('MyCollection'); });
 
 Route::post('/collection/init', [CollectionController::class, 'init']);
 Route::post('/collection/verify', [CollectionController::class, 'verify']);

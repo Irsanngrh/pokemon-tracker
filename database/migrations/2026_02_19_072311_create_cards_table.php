@@ -14,6 +14,9 @@ return new class extends Migration {
             $table->string('card_number');
             $table->string('rarity')->nullable();
             $table->string('image_url')->nullable();
+            $table->string('category')->nullable();
+            $table->string('illustrator')->nullable();
+            $table->json('details')->nullable();
             $table->timestamps();
         });
     }

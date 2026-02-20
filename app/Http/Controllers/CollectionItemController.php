@@ -12,17 +12,15 @@ class CollectionItemController extends Controller
     {
         $token = $request->header('X-Collection-Token');
         $collection = Collection::where('private_token', $token)->first();
-
         if (!$collection) return response()->json([], 404);
-
-        return response()->json(CollectionItem::where('collection_id', $collection->id)->get());
+        
+        return response()->json(CollectionItem::where('collection_id', $collection->id)->with(['card.expansion', 'card.price'])->get());
     }
 
     public function updateItem(Request $request)
     {
         $token = $request->header('X-Collection-Token');
         $collection = Collection::where('private_token', $token)->first();
-
         if (!$collection) return response()->json(['error' => 'Unauthorized'], 401);
 
         $validated = $request->validate([
@@ -37,14 +35,13 @@ class CollectionItemController extends Controller
             ['is_owned' => $validated['is_owned'], 'is_wishlist' => $validated['is_wishlist'], 'quantity' => $validated['quantity']]
         );
 
-        return response()->json($item);
+        return response()->json($item->load(['card.expansion', 'card.price']));
     }
 
     public function getSummary(Request $request)
     {
         $token = $request->header('X-Collection-Token');
         $collection = Collection::where('private_token', $token)->first();
-
         if (!$collection) return response()->json(['total_value' => 0, 'total_cards' => 0]);
 
         $items = CollectionItem::where('collection_id', $collection->id)

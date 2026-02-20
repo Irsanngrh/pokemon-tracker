@@ -12,7 +12,6 @@ class AdminAuth
         if ($request->query('key') !== env('ADMIN_SECRET', 'admin123')) {
             abort(403);
         }
-
         return $next($request);
     }
 }

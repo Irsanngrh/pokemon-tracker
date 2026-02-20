@@ -27,7 +27,6 @@ class CollectionExport implements FromCollection, WithHeadings, WithMapping
     public function map($item): array
     {
         $price = $item->card->price->price ?? 0;
-        
         return [
             $item->card->name,
             $item->card->card_number,
@@ -40,13 +39,6 @@ class CollectionExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return [
-            'Card Name',
-            'Card Number',
-            'Expansion',
-            'Quantity',
-            'Estimated Unit Price (IDR)',
-            'Subtotal (IDR)'
-        ];
+        return ['Card Name', 'Card Number', 'Expansion', 'Quantity', 'Estimated Unit Price (IDR)', 'Subtotal (IDR)'];
     }
 }

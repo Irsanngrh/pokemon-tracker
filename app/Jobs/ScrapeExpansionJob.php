@@ -34,9 +34,7 @@ class ScrapeExpansionJob implements ShouldQueue
         $process->setTimeout(7200); 
         $process->run();
 
-        if (!$process->isSuccessful()) {
-            return;
-        }
+        if (!$process->isSuccessful()) return;
 
         $output = $process->getOutput();
         $cardsData = json_decode($output, true);
@@ -48,18 +46,12 @@ class ScrapeExpansionJob implements ShouldQueue
 
             foreach ($cardsData as $cardData) {
                 $rawNumber = $cardData['card_number'] ?? '';
-                
                 if (preg_match('/^0*(\d+)\/(.+)$/', $rawNumber, $matches)) {
                     $numerator = (int)$matches[1];
                     $denominator = $matches[2];
                     $parsedCards[$numerator] = $cardData;
-                    
-                    if ($numerator > $maxNumerator) {
-                        $maxNumerator = $numerator;
-                    }
-                    if ($commonDenominator === '???') {
-                        $commonDenominator = $denominator;
-                    }
+                    if ($numerator > $maxNumerator) $maxNumerator = $numerator;
+                    if ($commonDenominator === '???') $commonDenominator = $denominator;
                 } else {
                     $parsedCards[$rawNumber] = $cardData;
                 }
@@ -76,21 +68,18 @@ class ScrapeExpansionJob implements ShouldQueue
                         'image_url' => 'https://via.placeholder.com/240x330.png?text=Missing+Card',
                         'category' => 'Unknown',
                         'illustrator' => '-',
-                        'description' => 'Data kartu ini bolong/tidak ada di website resmi. Silakan edit manual URL gambar dan namanya di halaman Admin.'
+                        'details' => []
                     ];
                 }
 
                 Card::updateOrCreate(
-                    [
-                        'expansion_id' => $this->expansionId,
-                        'card_number' => $cardData['card_number']
-                    ],
+                    ['expansion_id' => $this->expansionId, 'card_number' => $cardData['card_number']],
                     [
                         'name' => $cardData['name'],
                         'image_url' => $cardData['image_url'],
                         'category' => $cardData['category'],
                         'illustrator' => $cardData['illustrator'],
-                        'description' => $cardData['description']
+                        'details' => $cardData['details']
                     ]
                 );
             }
@@ -98,16 +87,13 @@ class ScrapeExpansionJob implements ShouldQueue
             foreach ($parsedCards as $key => $cardData) {
                 if (!is_int($key)) {
                     Card::updateOrCreate(
-                        [
-                            'expansion_id' => $this->expansionId,
-                            'card_number' => $cardData['card_number'] ?? '000/000'
-                        ],
+                        ['expansion_id' => $this->expansionId, 'card_number' => $cardData['card_number'] ?? '000/000'],
                         [
                             'name' => $cardData['name'] ?? 'Unknown',
                             'image_url' => $cardData['image_url'] ?? null,
                             'category' => $cardData['category'] ?? null,
                             'illustrator' => $cardData['illustrator'] ?? null,
-                            'description' => $cardData['description'] ?? null
+                            'details' => $cardData['details'] ?? []
                         ]
                     );
                 }

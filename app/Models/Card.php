@@ -9,16 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Card extends Model
 {
-    protected $fillable = [
-        'expansion_id',
-        'name',
-        'card_number',
-        'rarity',
-        'image_url',
-        'category',
-        'illustrator',
-        'description'
-    ];
+    protected $fillable = ['expansion_id', 'name', 'card_number', 'rarity', 'image_url', 'category', 'illustrator', 'details'];
+    protected $casts = ['details' => 'array'];
 
     public function expansion(): BelongsTo
     {

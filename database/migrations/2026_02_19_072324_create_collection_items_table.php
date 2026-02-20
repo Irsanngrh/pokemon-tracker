@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->boolean('is_wishlist')->default(false);
             $table->integer('quantity')->default(0);
             $table->timestamps();
+            
+            $table->unique(['collection_id', 'card_id']);
         });
     }
 

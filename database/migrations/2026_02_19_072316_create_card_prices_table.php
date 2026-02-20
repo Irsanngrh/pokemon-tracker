@@ -11,7 +11,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('card_id')->constrained()->cascadeOnDelete();
             $table->decimal('price', 15, 2)->default(0);
-            $table->string('source_url')->nullable();
             $table->boolean('is_manual_override')->default(false);
             $table->timestamps();
         });
