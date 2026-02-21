@@ -1,20 +1,7 @@
-import { reactive } from 'vue';
-
-export const toastState = reactive({
-    show: false,
-    message: '',
-    type: 'success'
-});
-
-export const showToast = (message, type = 'success') => {
-    toastState.message = message;
-    toastState.type = type;
-    toastState.show = true;
-    setTimeout(() => {
-        toastState.show = false;
-    }, 3000);
-};
-
-export const cleanCardName = (name) => {
-    return name;
+export const cleanCardName = (name, category) => {
+    if (!name) return 'Unknown';
+    if (!category) return name;
+    const safeCategory = category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`^${safeCategory}\\s+`, 'i');
+    return name.replace(regex, '').trim();
 };
